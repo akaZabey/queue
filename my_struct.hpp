@@ -2,8 +2,6 @@
 #define MY_STRUCT_HPP
 
 namespace my_struct {
-    const size_t QBUF_SIZE = 5;
-
     template <typename T>
     class queue;
 

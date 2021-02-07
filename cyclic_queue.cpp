@@ -6,33 +6,39 @@
 
 namespace my_struct {
     enum consts {
+        BEAUTIFUL_CONSTANT = -1,
         OPERATION_DONE = 0,
-        OPERATION_UNDONE = 1
+        OPERATION_UNDONE = 1,
+        QBUF_SIZE = 5
     };
 
     template <typename T>
-    queue<T>::queue(): buffer(new T[QBUF_SIZE]), front_i(-1), rear_i(-1) {};
+    queue<T>::queue(): buffer(new T[QBUF_SIZE]), 
+                       front_i(BEAUTIFUL_CONSTANT), 
+                       rear_i(BEAUTIFUL_CONSTANT) {};
 
     template <typename T>
     T &queue<T>::front() const {
-        if (front_i == -1) return buffer[0]; // expect undefined behavior if
+        if (front_i == BEAUTIFUL_CONSTANT) 
+            return buffer[0];               // expect undefined behavior if
         return buffer[front_i];             // the requested value is undefined
     }
 
     template <typename T>
     T &queue<T>::back() const {
-        if (rear_i == -1) return buffer[0]; // expect undefined behavior if
-        return buffer[rear_i];             // the requested value is undefined
+        if (rear_i == BEAUTIFUL_CONSTANT) 
+            return buffer[0];               // expect undefined behavior if
+        return buffer[rear_i];              // the requested value is undefined
     }
 
     template <typename T>
     bool queue<T>::empty() const {
-        return front_i == -1;
+        return front_i == BEAUTIFUL_CONSTANT;
     }
 
     template <typename T>
     size_t queue<T>::size() const {
-        if (rear_i == -1 && front_i == -1)
+        if (rear_i == BEAUTIFUL_CONSTANT && front_i == BEAUTIFUL_CONSTANT)
             return 0;
         else if (rear_i >= front_i)
             return rear_i - front_i + 1;
@@ -48,7 +54,7 @@ namespace my_struct {
         else 
             ++rear_i;
         buffer[rear_i] = to_push;
-        if (front_i == -1) ++front_i;
+        if (front_i == BEAUTIFUL_CONSTANT) ++front_i;
         return OPERATION_DONE;
     }
 
@@ -57,8 +63,8 @@ namespace my_struct {
         if (empty()) 
             return OPERATION_UNDONE;
         if (front_i == rear_i) {
-            front_i = -1;
-            rear_i = -1;
+            front_i = BEAUTIFUL_CONSTANT;
+            rear_i = BEAUTIFUL_CONSTANT;
         } else if (front_i == QBUF_SIZE - 1) 
             front_i = 0;
         else ++front_i;
