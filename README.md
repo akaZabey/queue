@@ -1,1 +1,3 @@
-# queue
+# Cyclic queue
++ templates
++ constructors, operator=
