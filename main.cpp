@@ -38,12 +38,19 @@ int main(int argc, char const *argv[]) {
     std::cout << "\t~~~~~~~~~~~~~~~~~~\n";
     std::cout << "\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n";
     std::cout << "\toriginal queue after cpy and =\n" << my_q << '\n';
+    std::cout << "\t~~~~~~~~~~~~~~~~~~\n";
+    my_struct::queue<int> my_q_from_tmp = std::move(my_q);
+    std::cout << "\t~~~~~~~~~~~~~~~~~~~~~~~\n";
+    std::cout << "\tqueue init from tmp obj\n" << my_q_from_tmp << '\n';
     for (int i = 0; i < push_pop_cnt; ++i) {
         std::cout << "\t~~~~~~~~~~~~~~~~~~\n";
-        ret = my_q.pop();
+        ret = my_q_from_tmp.pop();
         std::cout << "\tpop(" << i << ") returned " << ret << '\n';
-        std::cout << my_q << '\n';
+        std::cout << my_q_from_tmp << '\n';
     }
+    std::cout << "\t~~~~~~~~~~~~~~~~~~\n";
+    std::cout << "\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n";
+    std::cout << "\toriginal queue after using as tmp obj\n" << my_q << '\n';
     std::cout << "\t~~~~~~~~~~~~~~~~~~\n";
     return 0;
 }

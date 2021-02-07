@@ -33,7 +33,11 @@ namespace my_struct {
 
         queue<T> &operator=(const queue &);
 
+        queue<T> &operator=(queue &&);
+
         queue(const queue &);
+
+        queue(queue &&);
 
         ~queue();
 

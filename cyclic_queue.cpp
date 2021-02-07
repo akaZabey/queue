@@ -5,8 +5,9 @@
 #include "my_struct.hpp"
 
 namespace my_struct {
+    const size_t BEAUTIFUL_CONSTANT = -1;
+
     enum consts {
-        BEAUTIFUL_CONSTANT = -1,
         OPERATION_DONE = 0,
         OPERATION_UNDONE = 1,
         QBUF_SIZE = 5
@@ -96,8 +97,21 @@ namespace my_struct {
     }
 
     template<typename T>
+    queue<T> &queue<T>::operator=(queue &&other) {
+        front_i = other.front_i;
+        rear_i = other.rear_i;
+        std::swap(buffer, other.buffer);
+        return *this;
+    }
+
+    template<typename T>
     queue<T>::queue(const queue<T> &other): queue() {
         *this = other;
+    }
+
+    template<typename T>
+    queue<T>::queue(queue &&other): queue() {
+        *this = std::move(other);
     }
 
     template <typename T>
