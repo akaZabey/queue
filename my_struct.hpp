@@ -13,7 +13,7 @@ namespace my_struct {
     template <typename T>
     class queue {
     public:
-        queue(): buffer(new T[QBUF_SIZE]), front_i(-1), rear_i(-1) {};
+        queue();
 
         T &front() const;
 
@@ -32,6 +32,10 @@ namespace my_struct {
         size_t get_rear_i() const;
 
         T *get_buffer() const;
+
+        queue<T> &operator=(const queue &);
+
+        queue(const queue &);
 
         ~queue();
 

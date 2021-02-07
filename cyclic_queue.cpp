@@ -11,13 +11,18 @@ namespace my_struct {
     };
 
     template <typename T>
+    queue<T>::queue(): buffer(new T[QBUF_SIZE]), front_i(-1), rear_i(-1) {};
+
+    template <typename T>
     T &queue<T>::front() const {
-        return buffer[front_i];
+        if (front_i == -1) return buffer[0]; // expect undefined behavior if
+        return buffer[front_i];             // the requested value is undefined
     }
 
     template <typename T>
     T &queue<T>::back() const {
-        return buffer[rear_i];
+        if (rear_i == -1) return buffer[0]; // expect undefined behavior if
+        return buffer[rear_i];             // the requested value is undefined
     }
 
     template <typename T>
@@ -73,6 +78,20 @@ namespace my_struct {
     template<typename T>
     T *queue<T>::get_buffer() const {
         return buffer;
+    }
+
+    template<typename T>
+    queue<T> &queue<T>::operator=(const queue<T> &other) {
+        front_i = other.front_i;
+        rear_i = other.rear_i;
+        for (size_t i = front_i; i <= rear_i; ++i)
+            buffer[i] = other.buffer[i];
+        return *this;
+    }
+
+    template<typename T>
+    queue<T>::queue(const queue<T> &other): queue() {
+        *this = other;
     }
 
     template <typename T>
