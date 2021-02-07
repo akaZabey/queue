@@ -1,9 +1,7 @@
 #include <iostream>
 #include "cyclic_queue.cpp"
 
-enum consts {
-    push_pop_cnt = 6
-};
+constexpr int push_pop_cnt = 6;
 
 int main(int argc, char const *argv[]) {
     my_struct::queue<int> my_q;

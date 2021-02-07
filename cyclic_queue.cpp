@@ -1,17 +1,9 @@
-#ifndef CYCLIC_QUEUE_CPP
-#define CYCLIC_QUEUE_CPP
-
 #include <iostream>
 #include "my_struct.hpp"
 
 namespace my_struct {
-    const size_t BEAUTIFUL_CONSTANT = -1;
-
-    enum consts {
-        OPERATION_DONE = 0,
-        OPERATION_UNDONE = 1,
-        QBUF_SIZE = 5
-    };
+    constexpr size_t BEAUTIFUL_CONSTANT = -1;
+    constexpr size_t QBUF_SIZE = 5;
 
     template <typename T>
     queue<T>::queue(): buffer(new T[QBUF_SIZE]), 
@@ -49,27 +41,27 @@ namespace my_struct {
     template <typename T>
     bool queue<T>::push(const T &to_push) {
         if ((front_i == 0 && rear_i == QBUF_SIZE - 1) || front_i - 1 == rear_i)
-            return OPERATION_UNDONE;
+            return true;
         if (rear_i == QBUF_SIZE - 1) 
             rear_i = 0;
         else 
             ++rear_i;
         buffer[rear_i] = to_push;
         if (front_i == BEAUTIFUL_CONSTANT) ++front_i;
-        return OPERATION_DONE;
+        return false;
     }
 
     template <typename T>
     bool queue<T>::pop() {
         if (empty()) 
-            return OPERATION_UNDONE;
+            return true;
         if (front_i == rear_i) {
             front_i = BEAUTIFUL_CONSTANT;
             rear_i = BEAUTIFUL_CONSTANT;
         } else if (front_i == QBUF_SIZE - 1) 
             front_i = 0;
         else ++front_i;
-        return OPERATION_DONE;
+        return false;
     }
 
     template<typename T>
@@ -136,5 +128,3 @@ namespace my_struct {
         return out;
     }
 }
-
-#endif
