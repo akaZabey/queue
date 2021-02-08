@@ -3,12 +3,12 @@
 
 namespace my_struct {
     constexpr size_t BEAUTIFUL_CONSTANT = -1;
-    constexpr size_t QBUF_SIZE = 5;
 
     template <typename T>
-    queue<T>::queue(): buffer(new T[QBUF_SIZE]), 
-                       front_i(BEAUTIFUL_CONSTANT), 
-                       rear_i(BEAUTIFUL_CONSTANT) {};
+    queue<T>::queue(size_t max_cnt): buffer(new T[max_cnt]), 
+                                     front_i(BEAUTIFUL_CONSTANT), 
+                                     rear_i(BEAUTIFUL_CONSTANT), 
+                                     buf_size(max_cnt) {};
 
     template <typename T>
     T &queue<T>::front() const {
@@ -35,14 +35,14 @@ namespace my_struct {
             return 0;
         else if (rear_i >= front_i)
             return rear_i - front_i + 1;
-        return QBUF_SIZE - front_i + rear_i;
+        return buf_size - front_i + rear_i;
     }
 
     template <typename T>
     bool queue<T>::push(const T &to_push) {
-        if ((front_i == 0 && rear_i == QBUF_SIZE - 1) || front_i - 1 == rear_i)
+        if ((front_i == 0 && rear_i == buf_size - 1) || front_i - 1 == rear_i)
             return true;
-        if (rear_i == QBUF_SIZE - 1) 
+        if (rear_i == buf_size - 1) 
             rear_i = 0;
         else 
             ++rear_i;
@@ -58,7 +58,7 @@ namespace my_struct {
         if (front_i == rear_i) {
             front_i = BEAUTIFUL_CONSTANT;
             rear_i = BEAUTIFUL_CONSTANT;
-        } else if (front_i == QBUF_SIZE - 1) 
+        } else if (front_i == buf_size - 1) 
             front_i = 0;
         else ++front_i;
         return false;
@@ -75,6 +75,11 @@ namespace my_struct {
     }
 
     template<typename T>
+    size_t queue<T>::get_buf_size() const {
+        return buf_size;
+    }
+
+    template<typename T>
     T *queue<T>::get_buffer() const {
         return buffer;
     }
@@ -83,6 +88,7 @@ namespace my_struct {
     queue<T> &queue<T>::operator=(const queue<T> &other) {
         front_i = other.front_i;
         rear_i = other.rear_i;
+        buf_size = other.buf_size;
         for (size_t i = front_i; i <= rear_i; ++i)
             buffer[i] = other.buffer[i];
         return *this;
@@ -92,17 +98,18 @@ namespace my_struct {
     queue<T> &queue<T>::operator=(queue &&other) {
         front_i = other.front_i;
         rear_i = other.rear_i;
+        buf_size = other.buf_size;
         std::swap(buffer, other.buffer);
         return *this;
     }
 
     template<typename T>
-    queue<T>::queue(const queue<T> &other): queue() {
+    queue<T>::queue(const queue<T> &other): queue(other.buf_size) {
         *this = other;
     }
 
     template<typename T>
-    queue<T>::queue(queue &&other): queue() {
+    queue<T>::queue(queue &&other): queue(other.buf_size) {
         *this = std::move(other);
     }
 
@@ -115,11 +122,12 @@ namespace my_struct {
     std::ostream& operator<<(std::ostream &out, const queue<T> &this_queue) {
         out << "----------------\nThis is queue dump.\nQueue buffer: ";
         T *buffer = this_queue.get_buffer();
-        for (size_t i = 0; i < QBUF_SIZE; ++i) {
+        for (size_t i = 0; i < this_queue.buf_size; ++i) {
             out << buffer[i] << ", ";
         }
         out << "\b\b.\nQueue front_i = " << this_queue.get_front_i();
         out << "\nQueue rear_i = " << this_queue.get_rear_i();
+        out << "\nQueue buf_size = " << this_queue.get_buf_size();
         out << "\nQueue front = " << this_queue.front();
         out << "\nQueue back = " << this_queue.back();
         out << "\nIs queue empty = " << this_queue.empty();

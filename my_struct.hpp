@@ -11,7 +11,7 @@ namespace my_struct {
     template <typename T>
     class queue {
     public:
-        queue();
+        queue(size_t);
 
         T &front() const;
 
@@ -28,6 +28,8 @@ namespace my_struct {
         size_t get_front_i() const;
 
         size_t get_rear_i() const;
+
+        size_t get_buf_size() const;
 
         T *get_buffer() const;
 
@@ -46,6 +48,7 @@ namespace my_struct {
         T *buffer;
         size_t front_i;
         size_t rear_i;
+        size_t buf_size;
     };
 }
 

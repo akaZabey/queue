@@ -4,7 +4,7 @@
 constexpr int push_pop_cnt = 6;
 
 int main(int argc, char const *argv[]) {
-    my_struct::queue<int> my_q;
+    my_struct::queue<int> my_q(5);
     bool ret = false;
     std::cout << "\t~~~~~~~~~~~~~~~~~~~~~~~~~~\n";
     std::cout << "\tdump right after construct\n" << my_q << '\n';
