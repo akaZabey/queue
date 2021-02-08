@@ -121,13 +121,13 @@ namespace my_struct {
     template<typename T>
     std::ostream& operator<<(std::ostream &out, const queue<T> &this_queue) {
         out << "----------------\nThis is queue dump.\nQueue buffer: ";
-        T *buffer = this_queue.get_buffer();
+        T *buffer = this_queue.buffer;
         for (size_t i = 0; i < this_queue.buf_size; ++i) {
             out << buffer[i] << ", ";
         }
-        out << "\b\b.\nQueue front_i = " << this_queue.get_front_i();
-        out << "\nQueue rear_i = " << this_queue.get_rear_i();
-        out << "\nQueue buf_size = " << this_queue.get_buf_size();
+        out << "\b\b.\nQueue front_i = " << this_queue.front_i;
+        out << "\nQueue rear_i = " << this_queue.rear_i;
+        out << "\nQueue buf_size = " << this_queue.buf_size;
         out << "\nQueue front = " << this_queue.front();
         out << "\nQueue back = " << this_queue.back();
         out << "\nIs queue empty = " << this_queue.empty();
