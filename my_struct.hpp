@@ -59,6 +59,6 @@ namespace my_struct {
     };
 }
 
-#include "cyclic_queue.cpp"
+#include "cyclic_queue.hpp"
 
 #endif
