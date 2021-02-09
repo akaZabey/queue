@@ -2,7 +2,7 @@
 #include "my_struct.hpp"
 #include "cyclic_queue.cpp"
 
-constexpr int push_pop_cnt = 6;
+constexpr int push_pop_cnt = 12;
 
 int main(int argc, char const *argv[]) {
     my_struct::queue<int> my_q(5);

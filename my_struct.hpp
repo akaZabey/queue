@@ -11,12 +11,12 @@ namespace my_struct {
     template <typename T>
     class queue {
     public:
-        queue(size_t);
-
-        T &front() const;
-
-        T &back() const;
-
+        queue(size_t);    // Param is max cnt of elements can be pushed
+                          // with method push, force_push ignores it.
+        T &front() const; // Expect undefined behavior if
+                          // the requested value is undefined.
+        T &back() const;  // Expect undefined behavior if
+                          // the requested value is undefined.
         bool empty() const;
 
         size_t size() const;
@@ -32,6 +32,8 @@ namespace my_struct {
         size_t get_rear_i() const;
 
         size_t get_buf_size() const;
+
+        size_t get_min_buf_size() const;
 
         T *get_buffer() const;
 
@@ -51,6 +53,13 @@ namespace my_struct {
         size_t front_i;
         size_t rear_i;
         size_t buf_size;
+        size_t min_buf_size;
+
+        bool buf_enlarge();
+
+        bool push_opti(const T &, bool);
+
+        void buf_diminish();
     };
 }
 

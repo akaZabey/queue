@@ -8,20 +8,21 @@ namespace my_struct {
     queue<T>::queue(size_t max_cnt): buffer(new T[max_cnt]), 
                                      front_i(BEAUTIFUL_CONSTANT), 
                                      rear_i(BEAUTIFUL_CONSTANT), 
-                                     buf_size(max_cnt) {};
+                                     buf_size(max_cnt),
+                                     min_buf_size(max_cnt) {};
 
     template <typename T>
     T &queue<T>::front() const {
         if (front_i == BEAUTIFUL_CONSTANT) 
-            return buffer[0];               // expect undefined behavior if
-        return buffer[front_i];             // the requested value is undefined
+            return buffer[0];
+        return buffer[front_i];
     }
 
     template <typename T>
     T &queue<T>::back() const {
         if (rear_i == BEAUTIFUL_CONSTANT) 
-            return buffer[0];               // expect undefined behavior if
-        return buffer[rear_i];              // the requested value is undefined
+            return buffer[0];
+        return buffer[rear_i];
     }
 
     template <typename T>
@@ -40,50 +41,12 @@ namespace my_struct {
 
     template <typename T>
     bool queue<T>::push(const T &to_push) {
-        if ((front_i == 0 && rear_i == buf_size - 1) || front_i - 1 == rear_i)
-            return true;
-        if (rear_i == buf_size - 1) 
-            rear_i = 0;
-        else 
-            ++rear_i;
-        buffer[rear_i] = to_push;
-        if (front_i == BEAUTIFUL_CONSTANT) ++front_i;
-        return false;
+        return push_opti(to_push, false);
     }
 
     template <typename T>
     bool queue<T>::force_push(const T &to_push) {
-        if ((front_i == 0 && rear_i == buf_size - 1) || front_i - 1 == rear_i){
-            size_t new_buf_size = 0;
-            if (buf_size < BEAUTIFUL_CONSTANT / 2)
-                new_buf_size = buf_size * 2;
-            else if (buf_size < BEAUTIFUL_CONSTANT)
-                new_buf_size = BEAUTIFUL_CONSTANT;
-            else 
-                return true;
-            T *new_buffer = new T[new_buf_size];
-            size_t new_i = 0;
-            size_t i = front_i;
-            if (front_i > rear_i) {
-                for (; i < buf_size; ++i, ++new_i)
-                    new_buffer[new_i] = buffer[i];
-                for (i = 0; i <= rear_i; ++i, ++new_i)
-                    new_buffer[new_i] = buffer[i];
-            } else {
-                for (; i <= rear_i; ++i, ++new_i)
-                    new_buffer[new_i] = buffer[i];
-            }
-            delete [] buffer;
-            buffer = new_buffer;
-            buf_size = new_buf_size;
-        }
-        if (rear_i == buf_size - 1) 
-            rear_i = 0;
-        else 
-            ++rear_i;
-        buffer[rear_i] = to_push;
-        if (front_i == BEAUTIFUL_CONSTANT) ++front_i;
-        return false;
+        return push_opti(to_push, true);
     }
 
     template <typename T>
@@ -96,6 +59,7 @@ namespace my_struct {
         } else if (front_i == buf_size - 1) 
             front_i = 0;
         else ++front_i;
+        buf_diminish();
         return false;
     }
 
@@ -115,6 +79,11 @@ namespace my_struct {
     }
 
     template<typename T>
+    size_t queue<T>::get_min_buf_size() const {
+        return min_buf_size;
+    }
+
+    template<typename T>
     T *queue<T>::get_buffer() const {
         return buffer;
     }
@@ -124,6 +93,7 @@ namespace my_struct {
         front_i = other.front_i;
         rear_i = other.rear_i;
         buf_size = other.buf_size;
+        min_buf_size = other.min_buf_size;
         size_t i = 0;
         size_t other_i = other.front_i;
         if (other.front_i > other.rear_i) {
@@ -143,6 +113,7 @@ namespace my_struct {
         front_i = other.front_i;
         rear_i = other.rear_i;
         buf_size = other.buf_size;
+        min_buf_size = other.min_buf_size;
         std::swap(buffer, other.buffer);
         return *this;
     }
@@ -172,11 +143,83 @@ namespace my_struct {
         out << "\b\b.\nQueue front_i = " << this_queue.front_i;
         out << "\nQueue rear_i = " << this_queue.rear_i;
         out << "\nQueue buf_size = " << this_queue.buf_size;
+        out << "\nQueue min_buf_size = " << this_queue.min_buf_size;
         out << "\nQueue front = " << this_queue.front();
         out << "\nQueue back = " << this_queue.back();
         out << "\nIs queue empty = " << this_queue.empty();
         out << "\nQueue size = " << this_queue.size();
         out << "\n----------------";
         return out;
+    }
+
+    template <typename T>
+    bool queue<T>::buf_enlarge() {
+        size_t new_buf_size = 0;
+        if (buf_size < BEAUTIFUL_CONSTANT / 2)
+            new_buf_size = buf_size * 2;
+        else if (buf_size < BEAUTIFUL_CONSTANT)
+            new_buf_size = BEAUTIFUL_CONSTANT;
+        else 
+            return true;
+        T *new_buffer = new T[new_buf_size];
+        size_t new_i = 0;
+        size_t i = front_i;
+        if (front_i > rear_i) {
+            for (; i < buf_size; ++i, ++new_i)
+                new_buffer[new_i] = buffer[i];
+            for (i = 0; i <= rear_i; ++i, ++new_i)
+                new_buffer[new_i] = buffer[i];
+        } else {
+            for (; i <= rear_i; ++i, ++new_i)
+                new_buffer[new_i] = buffer[i];
+        }
+        delete [] buffer;
+        buffer = new_buffer;
+        buf_size = new_buf_size;
+        front_i = 0;
+        rear_i = --new_i;
+        return false;
+    }
+
+    template <typename T>
+    bool queue<T>::push_opti(const T &to_push, bool is_force) {
+        if ((front_i == 0 && rear_i == buf_size - 1) || front_i - 1 == rear_i){
+            if (is_force && buf_enlarge()) 
+                return true;
+        }
+        if (rear_i == buf_size - 1) 
+            rear_i = 0;
+        else 
+            ++rear_i;
+        buffer[rear_i] = to_push;
+        if (front_i == BEAUTIFUL_CONSTANT) ++front_i;
+        return false;
+    }
+
+    template <typename T>
+    void queue<T>::buf_diminish() {
+        if (size() * 4 > buf_size || buf_size == min_buf_size) return;
+        size_t new_buf_size = 0;
+        if (buf_size > min_buf_size * 2)
+            new_buf_size = std::max(buf_size / 2, min_buf_size); // for safety
+        else 
+            new_buf_size = min_buf_size;
+        T *new_buffer = new T[new_buf_size];
+        size_t new_i = 0;
+        size_t i = front_i;
+        if (front_i > rear_i) {
+            for (; i < buf_size; ++i, ++new_i)
+                new_buffer[new_i] = buffer[i];
+            for (i = 0; i <= rear_i; ++i, ++new_i)
+                new_buffer[new_i] = buffer[i];
+        } else {
+            for (; i <= rear_i; ++i, ++new_i)
+                new_buffer[new_i] = buffer[i];
+        }
+        delete [] buffer;
+        buffer = new_buffer;
+        buf_size = new_buf_size;
+        front_i = 0;
+        rear_i = --new_i;
     }
 }
