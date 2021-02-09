@@ -1,6 +1,5 @@
 #include <iostream>
 #include "my_struct.hpp"
-#include "cyclic_queue.cpp"
 
 constexpr int push_pop_cnt = 12;
 
@@ -11,7 +10,7 @@ int main(int argc, char const *argv[]) {
     std::cout << "\tdump right after construct\n" << my_q << '\n';
     for (int i = 0; i < push_pop_cnt; ++i) {
         std::cout << "\t~~~~~~~~~~~~~~~~~~\n";
-        ret = my_q.force_push(i + 1);
+        ret = my_q.push(i + 1);
         std::cout << "\tforce_push(" << i + 1 << ") returned " << ret << '\n';
         std::cout << my_q << '\n';
     }

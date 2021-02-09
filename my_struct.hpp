@@ -23,8 +23,6 @@ namespace my_struct {
 
         bool push(const T &);
 
-        bool force_push(const T &);
-
         bool pop();
 
         size_t get_front_i() const;
@@ -57,10 +55,10 @@ namespace my_struct {
 
         bool buf_enlarge();
 
-        bool push_opti(const T &, bool);
-
         void buf_diminish();
     };
 }
+
+#include "cyclic_queue.cpp"
 
 #endif

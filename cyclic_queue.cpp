@@ -41,12 +41,17 @@ namespace my_struct {
 
     template <typename T>
     bool queue<T>::push(const T &to_push) {
-        return push_opti(to_push, false);
-    }
-
-    template <typename T>
-    bool queue<T>::force_push(const T &to_push) {
-        return push_opti(to_push, true);
+        if ((front_i == 0 && rear_i == buf_size - 1) || front_i - 1 == rear_i){
+            if (buf_enlarge()) 
+                return true;
+        }
+        if (rear_i == buf_size - 1) 
+            rear_i = 0;
+        else 
+            ++rear_i;
+        buffer[rear_i] = to_push;
+        if (front_i == BEAUTIFUL_CONSTANT) ++front_i;
+        return false;
     }
 
     template <typename T>
@@ -178,21 +183,6 @@ namespace my_struct {
         buf_size = new_buf_size;
         front_i = 0;
         rear_i = --new_i;
-        return false;
-    }
-
-    template <typename T>
-    bool queue<T>::push_opti(const T &to_push, bool is_force) {
-        if ((front_i == 0 && rear_i == buf_size - 1) || front_i - 1 == rear_i){
-            if (is_force && buf_enlarge()) 
-                return true;
-        }
-        if (rear_i == buf_size - 1) 
-            rear_i = 0;
-        else 
-            ++rear_i;
-        buffer[rear_i] = to_push;
-        if (front_i == BEAUTIFUL_CONSTANT) ++front_i;
         return false;
     }
 
