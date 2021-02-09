@@ -23,6 +23,8 @@ namespace my_struct {
 
         bool push(const T &);
 
+        bool force_push(const T &);
+
         bool pop();
 
         size_t get_front_i() const;

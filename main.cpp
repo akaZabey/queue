@@ -1,4 +1,5 @@
 #include <iostream>
+#include "my_struct.hpp"
 #include "cyclic_queue.cpp"
 
 constexpr int push_pop_cnt = 6;
@@ -10,8 +11,8 @@ int main(int argc, char const *argv[]) {
     std::cout << "\tdump right after construct\n" << my_q << '\n';
     for (int i = 0; i < push_pop_cnt; ++i) {
         std::cout << "\t~~~~~~~~~~~~~~~~~~\n";
-        ret = my_q.push(i + 1);
-        std::cout << "\tpush(" << i + 1 << ") returned " << ret << '\n';
+        ret = my_q.force_push(i + 1);
+        std::cout << "\tforce_push(" << i + 1 << ") returned " << ret << '\n';
         std::cout << my_q << '\n';
     }
     my_struct::queue<int> my_q_cpy(my_q);
@@ -20,7 +21,7 @@ int main(int argc, char const *argv[]) {
     for (int i = 0; i < push_pop_cnt; ++i) {
         std::cout << "\t~~~~~~~~~~~~~~~~~~\n";
         ret = my_q_cpy.pop();
-        std::cout << "\tpop(" << i << ") returned " << ret << '\n';
+        std::cout << "\tpop() returned " << ret << '\n';
         std::cout << my_q_cpy << '\n';
     }
     std::cout << "\t~~~~~~~~~~~~~~~~~~\n";
@@ -30,7 +31,7 @@ int main(int argc, char const *argv[]) {
     for (int i = 0; i < push_pop_cnt; ++i) {
         std::cout << "\t~~~~~~~~~~~~~~~~~~\n";
         ret = my_q_eq.pop();
-        std::cout << "\tpop(" << i << ") returned " << ret << '\n';
+        std::cout << "\tpop() returned " << ret << '\n';
         std::cout << my_q_eq << '\n';
     }
     std::cout << "\t~~~~~~~~~~~~~~~~~~\n";
@@ -43,7 +44,7 @@ int main(int argc, char const *argv[]) {
     for (int i = 0; i < push_pop_cnt; ++i) {
         std::cout << "\t~~~~~~~~~~~~~~~~~~\n";
         ret = my_q_from_tmp.pop();
-        std::cout << "\tpop(" << i << ") returned " << ret << '\n';
+        std::cout << "\tpop() returned " << ret << '\n';
         std::cout << my_q_from_tmp << '\n';
     }
     std::cout << "\t~~~~~~~~~~~~~~~~~~\n";

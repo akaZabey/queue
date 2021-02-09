@@ -52,6 +52,41 @@ namespace my_struct {
     }
 
     template <typename T>
+    bool queue<T>::force_push(const T &to_push) {
+        if ((front_i == 0 && rear_i == buf_size - 1) || front_i - 1 == rear_i){
+            size_t new_buf_size = 0;
+            if (buf_size < BEAUTIFUL_CONSTANT / 2)
+                new_buf_size = buf_size * 2;
+            else if (buf_size < BEAUTIFUL_CONSTANT)
+                new_buf_size = BEAUTIFUL_CONSTANT;
+            else 
+                return true;
+            T *new_buffer = new T[new_buf_size];
+            size_t new_i = 0;
+            size_t i = front_i;
+            if (front_i > rear_i) {
+                for (; i < buf_size; ++i, ++new_i)
+                    new_buffer[new_i] = buffer[i];
+                for (i = 0; i <= rear_i; ++i, ++new_i)
+                    new_buffer[new_i] = buffer[i];
+            } else {
+                for (; i <= rear_i; ++i, ++new_i)
+                    new_buffer[new_i] = buffer[i];
+            }
+            delete [] buffer;
+            buffer = new_buffer;
+            buf_size = new_buf_size;
+        }
+        if (rear_i == buf_size - 1) 
+            rear_i = 0;
+        else 
+            ++rear_i;
+        buffer[rear_i] = to_push;
+        if (front_i == BEAUTIFUL_CONSTANT) ++front_i;
+        return false;
+    }
+
+    template <typename T>
     bool queue<T>::pop() {
         if (empty()) 
             return true;
@@ -89,8 +124,17 @@ namespace my_struct {
         front_i = other.front_i;
         rear_i = other.rear_i;
         buf_size = other.buf_size;
-        for (size_t i = front_i; i <= rear_i; ++i)
-            buffer[i] = other.buffer[i];
+        size_t i = 0;
+        size_t other_i = other.front_i;
+        if (other.front_i > other.rear_i) {
+            for (; other_i < other.buf_size; ++other_i, ++i)
+                buffer[i] = other.buffer[other_i];
+            for (other_i = 0; other_i <= other.rear_i; ++other_i, ++i)
+                buffer[i] = other.buffer[other_i];
+        } else {
+            for (; i <= other.rear_i; ++other_i, ++i)
+                buffer[i] = other.buffer[other_i];
+        }
         return *this;
     }
 
